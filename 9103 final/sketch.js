@@ -2,11 +2,6 @@ let rings = [];
 let ringConfigs = [];
 let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
 
-let baseWidth = 520; // set base width of canvas to be 520
-let baseHeight = 520; // set base height of canvas to be 520
-let scaling = 1; // set factor to scale artwork when window is resized
-
-// set outer ellipses variables
 let ellipses = [
     { x: 286.8, y: 73.4, angle: 0, fillColor: null},
     { x: 301.1, y: 40.6, angle: 0, fillColor: null},
@@ -119,7 +114,7 @@ let ellipses = [
     { x: 242.5, y: 111.4, angle: 0, fillColor: null}
 ];
 
-// draw function for ellipse
+
 function fillEllipse(ellipsesList) {
     let count = 0;
     for (let i = 0; i < ellipsesList.length; i++) {
@@ -131,7 +126,6 @@ function fillEllipse(ellipsesList) {
     }
 }
 
-// set outer small circle variables
 let circles = [
     { x: 12.0, y: 9.0, r: 6.0},
     { x: 12.0, y: 9.0, r: 6.0},
@@ -309,7 +303,6 @@ let circles = [
     { x: 232.5, y: 519.5, r: 4.5},
 ];
 
-// draw function for outer circle
 function drawCircles(circleList) {
     stroke("#000000");
     strokeWeight(4);
@@ -321,15 +314,13 @@ function drawCircles(circleList) {
 }
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    createCanvas(520, 520);
+    noLoop();
     noLoop();
     angleMode(RADIANS);
 
-    // Calculate factor to scale artwork
-    scaling = min(width / baseWidth, height / baseHeight)
-
     ringConfigs = [
-        { //number 1
+        {
             x: 70, y: 70,
             fillStyles: ['layered', 'layered', 'dots'],
             bgColors: [color('#909F9C'), color('#C253A0'), color('#D4F0FC')],
@@ -339,9 +330,8 @@ function setup() {
                 color('#030F7B')
             ],
             hasCurve: true,
-            curveFlipped: true,
-            angle: PI / 2
-        },{ //number 2
+            angle: PI / 4
+        },{
             x: 220,
             y: 35,
             fillStyles: ['layered', 'dots', 'zigzag'],
@@ -352,9 +342,8 @@ function setup() {
                 color('#E81207')
             ],
             hasCurve: false,
-            angle: PI / 3,
-            hasDiagonal: true
-        },{ //number 3
+            angle: PI / 3
+        },{
             x: 370,
             y: 0,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -365,9 +354,8 @@ function setup() {
                 color('#F3352F')
             ],
             hasCurve: true,
-            curveFlipped: true,
-            angle: 2* PI / 3
-        },{ //number 7
+            angle: PI / 3
+        },{
             x: 480,
             y: 100,
             fillStyles: ['layered', 'dots', 'dots'],
@@ -379,7 +367,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 4
+        },{
             x: 30,
             y: 220,
             fillStyles: ['layered', 'dots', 'dots'],
@@ -391,7 +379,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 5
+        },{
             x: 180,
             y: 180,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -403,7 +391,7 @@ function setup() {
             ],
             hasCurve: true,
             angle: 5 * PI / 3
-        },{ //number 6
+        },{
             x: 335,
             y: 140,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -415,7 +403,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 8
+        },{
             x: -20,
             y: 360,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -427,7 +415,7 @@ function setup() {
             ],
             hasCurve: true,
             angle: 11 * PI / 6
-        },{ //number 9
+        },{
             x: 140,
             y: 320,
             fillStyles: ['layered', 'dots', 'zigzag'],
@@ -439,7 +427,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 10
+        },{
             x: 290,
             y: 290,
             fillStyles: ['layered', 'zigzag', 'dots'],
@@ -451,7 +439,7 @@ function setup() {
             ],
             hasCurve: true,
             angle: 0
-        },{ //number 11
+        },{
             x: 440,
             y: 250,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -463,7 +451,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 12
+        },{
             x: 77,
             y: 480,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -474,9 +462,8 @@ function setup() {
                 color('#F7190C')
             ],
             hasCurve: true,
-            curveFlipped: true,
-            angle: PI / 1.1
-        },{ //number 13
+            angle: PI / 6
+        },{
             x: 220,
             y: 440,
             fillStyles: ['layered', '606257', 'dots'],
@@ -487,10 +474,8 @@ function setup() {
                 color('#F66CD1')
             ],
             hasCurve: false,
-            angle: PI / 6,
-            hasDiagonal: true
-
-        },{ //number 14
+            angle: PI / 6
+        },{
             x: 375,
             y: 410,
             fillStyles: ['layered', '606257', 'dots'],
@@ -502,7 +487,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 15
+        },{
             x: 525,
             y: 370,
             fillStyles: ['none', 'layered', 'zigzag'],
@@ -512,7 +497,7 @@ function setup() {
                 color('#E21F01')],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 16
+        },{
             x: 330,
             y: 550,
             fillStyles: ['none', 'dots', 'dots'],
@@ -520,7 +505,7 @@ function setup() {
             patternColors: [color('#000000'), color('#53BF6C'), color('#F52121')],
             hasCurve: false,
             angle: PI / 3
-        },{ //number 17
+        },{
             x: 480,
             y: 530,
             fillStyles: ['layered', 'none', 'dots'],
@@ -536,17 +521,11 @@ function setup() {
     for (let config of ringConfigs) {
         rings.push(new RingPattern(config));
     }
-
 }
 
 
 function draw() {
     background(1, 89, 125);
-
-    // Scale and center the artpiece
-    translate((width - baseWidth * scaling) / 2, (height - baseHeight * scaling) / 2);
-    scale(scaling);
-
     for (let r of rings) {
         r.display();
     }
@@ -555,7 +534,7 @@ function draw() {
         let e = ellipses[i];
         stroke("#F28633");
         strokeWeight(1);
-        fill(e.fillColor || "white");        // Default white fill
+        fill(e.fillColor || "white");
 
         push();
         translate(e.x, e.y);
@@ -565,11 +544,6 @@ function draw() {
     }
     drawCircles(circles);
 
-}
-
-function windowResized() {
-    resizeCanvas(baseWidth, baseHeight);
-    scaling = min(width / baseWidth, height / baseHeight);
 }
 
 class RingPattern {
@@ -582,42 +556,55 @@ class RingPattern {
         this.r2 = 35;
         this.r3 = 70;
 
-        this.fillStyles = config.fillStyles; // [center, inner, outer]
+        this.fillStyles = config.fillStyles;
         this.bgColors = config.bgColors;
         this.patternColors = config.patternColors;
 
         this.hasCurve = config.hasCurve ?? false;
         this.angle = config.angle ?? 0;
-        this.curveFlipped = config.curveFlipped ?? false;
-        this.hasDiagonal = config.hasDiagonal ?? false;
+        this.rotation = 0;
+        this.isRotating = false;
+        this.rotationSpeed = 0.01;
+        this.clockwise = true;
+
     }
 
     display() {
-        // border circle
+        push();
+        translate(this.x, this.y);
+        if (this.isRotating) {
+            this.rotation += this.clockwise ? this.rotationSpeed : -this.rotationSpeed;
+        }
+        rotate(this.rotation);
+        this.render();
+        pop();
+    }
+
+    render() {
+
         noStroke();
         noFill();
         ellipse(this.x, this.y, this.r1 * 2);
         ellipse(this.x, this.y, this.r2 * 2);
         ellipse(this.x, this.y, this.r3 * 2);
 
-        // Each Area：Center，Inner Circle，Outer Circle
+
         this.drawRegion(this.r0, this.r1, this.fillStyles[0], this.bgColors[0], this.patternColors[0]);
         this.drawRegion(this.r1, this.r2, this.fillStyles[1], this.bgColors[1], this.patternColors[1]);
         this.drawRegion(this.r2, this.r3, this.fillStyles[2], this.bgColors[2], this.patternColors[2]);
 
-        // arc
+
         this.drawPinkCurve();
-        // Center white circle
+
         noStroke();
         fill(230);
-        ellipse(this.x, this.y, this.r0 * 2);  // control size using r0
-        this.drawDiagonalLine();
+        ellipse(this.x, this.y, this.r0 * 2);
 
     }
 
     drawRegion(innerR, outerR, style, bgColor, patternColor) {
         noStroke();
-        // stroke(this.bgColors[0]);
+
         fill(bgColor);
         this.drawDonut(innerR, outerR);
 
@@ -634,18 +621,18 @@ class RingPattern {
     drawDonut(innerR, outerR) {
         beginShape();
         for (let a = 0; a < TWO_PI; a += 0.05) {
-            vertex(this.x + outerR * cos(a), this.y + outerR * sin(a));
+            vertex(outerR * cos(a), outerR * sin(a));
         }
         beginContour();
         for (let a = TWO_PI; a > 0; a -= 0.05) {
-            vertex(this.x + innerR * cos(a), this.y + innerR * sin(a));
+            vertex(innerR * cos(a), innerR * sin(a));
         }
         endContour();
         endShape(CLOSE);
     }
 
     drawZigzagRing(innerR, outerR, steps, ringColor) {
-        let offset = 5; // safe offset
+        let offset = 5;
 
         stroke(ringColor);
         strokeWeight(1.5);
@@ -654,8 +641,8 @@ class RingPattern {
         for (let i = 0; i <= steps; i++) {
             let angle = TWO_PI * i / steps;
             let r = (i % 2 === 0) ? outerR - offset : innerR + offset;
-            let x = this.x + r * cos(angle);
-            let y = this.y + r * sin(angle);
+            let x = r * cos(angle);
+            let y = r * sin(angle);
             vertex(x, y);
         }
         endShape(CLOSE);
@@ -665,16 +652,16 @@ class RingPattern {
     drawLayeredRings(innerR, outerR, baseColors) {
         let ringCount = 14;
 
-        // Makes sure each colour appears once and uses 6 randomly
-        let colorPool = [...baseColors];  // Three colours
+
+        let colorPool = [...baseColors];
         while (colorPool.length < ringCount) {
             colorPool.push(random(baseColors));
         }
 
-        // shuffles the colour order
+
         shuffle(colorPool, true);
 
-        // draw the rings
+
         noFill();
         strokeWeight(3);
         for (let i = 0; i < ringCount; i++) {
@@ -695,6 +682,7 @@ class RingPattern {
         for (let i = 0; i < ringCount; i++) {
             let r = lerp(rMin + margin, rMax - margin, i / (ringCount - 1));
 
+
             let baseCount = floor(r * 1);
             let count = baseCount + floor(random(-4, 4));
 
@@ -702,11 +690,11 @@ class RingPattern {
                 let angle = TWO_PI * j / count + random(-0.05, 0.05);
                 let radiusOffset = random(-1.2, 1.2);
                 let effectiveR = r + radiusOffset;
-                let x = this.x + effectiveR * cos(angle);
-                let y = this.y + effectiveR * sin(angle);
+                let x = effectiveR * cos(angle);
+                let y = effectiveR * sin(angle);
 
 
-                let sizeFactor = map(effectiveR, rMin, rMax, rMin * 0.03, rMax * 0.018); // Adjustable range
+                let sizeFactor = map(effectiveR, rMin, rMax, rMin * 0.03, rMax * 0.018);
                 let w = random(4, 6) * sizeFactor;
                 let h = random(3, 5) * sizeFactor;
 
@@ -730,9 +718,6 @@ class RingPattern {
 
         push();
         translate(this.x, this.y);
-        if (this.curveFlipped) {
-            scale(-1, 1);
-        }
         rotate(this.angle);
         stroke('#F35074');
         strokeWeight(4);
@@ -746,19 +731,15 @@ class RingPattern {
         );
         pop();
     }
+}
 
 
-    drawDiagonalLine() {
-        if (!this.hasDiagonal) return;
-
-        push();
-        translate(this.x, this.y);
-        rotate(PI / 1.2);
-        stroke('#FF0000');
-        strokeWeight(2);
-        line(-this.r3, 0, this.r3, 0);
-        pop();
+function mousePressed() {
+    for (let r of rings) {
+        let d = dist(mouseX, mouseY, r.x, r.y);
+        if (d < r.r3) {
+            r.isRotating = !r.isRotating;
+        }
     }
-
-
+    loop();
 }
