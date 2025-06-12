@@ -1,16 +1,12 @@
 let rings = [];
 let ringConfigs = [];
-
-let baseWidth = 520;
-let baseHeight = 520;
-let scaling = 1;
-
 let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
 let operatingRings = [];
 let colorIndex = 0;
 let colorTimer = 0;
 let colorInterval = 10;
-
+let canvas;
+let baseSize = 520;
 
 let ellipses = [
     { x: 286.8, y: 73.4, angle: 0, fillColor: null},
@@ -324,8 +320,8 @@ function drawCircles(circleList) {
 }
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
-    scaling = min(width / baseWidth, height / baseHeight);
+    canvas = createCanvas(baseSize, baseSize);
+    canvas.parent("canvas-container");
     noLoop();
     fillEllipse(ellipses);
     angleMode(RADIANS);
@@ -537,12 +533,17 @@ function setup() {
     for (let config of ringConfigs) {
         rings.push(new RingPattern(config));
     }
+    windowResized();
 }
 
+function windowResized() {
+    let scaleFactor = min(windowWidth, windowHeight) / baseSize;
+    canvas.style('transform', `scale(${scaleFactor})`);
+    canvas.style('transform-origin', 'top left');
+    canvas.position((windowWidth - baseSize * scaleFactor) / 2, (windowHeight - baseSize * scaleFactor) / 2);
+}
 
 function draw() {
-    translate((width - baseWidth * scaling) / 2, (height - baseHeight * scaling) / 2);
-    scale(scaling);
     background(1, 89, 125);
     for (let r of rings) {
         r.display();
@@ -561,6 +562,7 @@ function draw() {
         pop();
     }
     drawCircles(circles);
+
 
     let activeRings = rings.filter(r => r.isRotating);
     let totalSpeed = activeRings.reduce((sum, r) => sum + Math.abs(r.rotationSpeed), 0);
@@ -621,15 +623,18 @@ class RingPattern {
     }
 
     render() {
+
         noStroke();
         noFill();
         ellipse(this.x, this.y, this.r1 * 2);
         ellipse(this.x, this.y, this.r2 * 2);
         ellipse(this.x, this.y, this.r3 * 2);
 
+        // center, inner, outer layer
         this.drawRegion(this.r0, this.r1, this.fillStyles[0], this.bgColors[0], this.patternColors[0]);
         this.drawRegion(this.r1, this.r2, this.fillStyles[1], this.bgColors[1], this.patternColors[1]);
         this.drawRegion(this.r2, this.r3, this.fillStyles[2], this.bgColors[2], this.patternColors[2]);
+
 
         this.drawPinkCurve();
         noStroke();
@@ -642,7 +647,6 @@ class RingPattern {
 
     drawRegion(innerR, outerR, style, bgColor, patternColor) {
         noStroke();
-        // stroke(this.bgColors[0]);
         fill(bgColor);
         this.drawDonut(innerR, outerR);
 
@@ -670,7 +674,7 @@ class RingPattern {
     }
 
     drawZigzagRing(innerR, outerR, steps, ringColor) {
-        let offset = 5;
+        let offset = 5; // 安全内缩
 
         stroke(ringColor);
         strokeWeight(1.5);
@@ -804,19 +808,35 @@ class RingPattern {
 }
 
 
-function mousePressed() {
+function getLogicalMousePos() {
+    let scaleFactor = min(windowWidth, windowHeight) / baseSize;
+    let bounds = canvas.elt.getBoundingClientRect();
+    let x = (mouseX - bounds.left) / scaleFactor;
+    let y = (mouseY - bounds.top) / scaleFactor;
+    return { x, y };
+}
+
+
+function mousePressed(event) {
+    let scaleFactor = min(windowWidth, windowHeight) / baseSize;
+    let bounds = canvas.elt.getBoundingClientRect();
+    let x = (event.clientX - bounds.left) / scaleFactor;
+    let y = (event.clientY - bounds.top) / scaleFactor;
+
     for (let r of rings) {
-        let d = dist(mouseX, mouseY, r.x, r.y);
+        let d = dist(x, y, r.x, r.y);
         if (d < r.r3) {
             r.isRotating = !r.isRotating;
             operatingRings.length = 0;
             operatingRings.push(r);
             if (r.isRotating) {
-                loop(); //
+                loop();
             }
         }
     }
 }
+
+
 
 function keyPressed() {
     if (key == ' ') {
@@ -860,9 +880,4 @@ function keyPressed() {
         noLoop();
         redraw();
     }
-}
-
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-    scaling = min(width / baseWidth, height / baseHeight);
 }
