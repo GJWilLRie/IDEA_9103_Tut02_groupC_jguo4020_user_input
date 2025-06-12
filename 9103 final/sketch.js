@@ -1,6 +1,16 @@
 let rings = [];
 let ringConfigs = [];
+
+let baseWidth = 520;
+let baseHeight = 520;
+let scaling = 1;
+
 let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
+let operatingRings = [];
+let colorIndex = 0;
+let colorTimer = 0;
+let colorInterval = 10;
+
 
 let ellipses = [
     { x: 286.8, y: 73.4, angle: 0, fillColor: null},
@@ -314,13 +324,14 @@ function drawCircles(circleList) {
 }
 
 function setup() {
-    createCanvas(520, 520);
+    createCanvas(windowWidth, windowHeight);
+    scaling = min(width / baseWidth, height / baseHeight);
     noLoop();
-    noLoop();
+    fillEllipse(ellipses);
     angleMode(RADIANS);
 
     ringConfigs = [
-        {
+        { //number 1
             x: 70, y: 70,
             fillStyles: ['layered', 'layered', 'dots'],
             bgColors: [color('#909F9C'), color('#C253A0'), color('#D4F0FC')],
@@ -330,8 +341,9 @@ function setup() {
                 color('#030F7B')
             ],
             hasCurve: true,
-            angle: PI / 4
-        },{
+            curveFlipped: true,
+            angle: PI / 2
+        },{ //number 2
             x: 220,
             y: 35,
             fillStyles: ['layered', 'dots', 'zigzag'],
@@ -342,8 +354,9 @@ function setup() {
                 color('#E81207')
             ],
             hasCurve: false,
-            angle: PI / 3
-        },{
+            angle: PI / 3,
+            hasDiagonal: true
+        },{ //number 3
             x: 370,
             y: 0,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -354,8 +367,9 @@ function setup() {
                 color('#F3352F')
             ],
             hasCurve: true,
-            angle: PI / 3
-        },{
+            curveFlipped: true,
+            angle: 2 * PI / 3
+        },{ //number 7
             x: 480,
             y: 100,
             fillStyles: ['layered', 'dots', 'dots'],
@@ -367,7 +381,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 4
             x: 30,
             y: 220,
             fillStyles: ['layered', 'dots', 'dots'],
@@ -379,7 +393,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 5
             x: 180,
             y: 180,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -391,7 +405,7 @@ function setup() {
             ],
             hasCurve: true,
             angle: 5 * PI / 3
-        },{
+        },{ //number 6
             x: 335,
             y: 140,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -403,7 +417,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 8
             x: -20,
             y: 360,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -415,7 +429,7 @@ function setup() {
             ],
             hasCurve: true,
             angle: 11 * PI / 6
-        },{
+        },{ //number 9
             x: 140,
             y: 320,
             fillStyles: ['layered', 'dots', 'zigzag'],
@@ -427,7 +441,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 10
             x: 290,
             y: 290,
             fillStyles: ['layered', 'zigzag', 'dots'],
@@ -439,7 +453,7 @@ function setup() {
             ],
             hasCurve: true,
             angle: 0
-        },{
+        },{ //number 11
             x: 440,
             y: 250,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -451,7 +465,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 12
             x: 77,
             y: 480,
             fillStyles: ['layered', 'layered', 'dots'],
@@ -462,8 +476,9 @@ function setup() {
                 color('#F7190C')
             ],
             hasCurve: true,
-            angle: PI / 6
-        },{
+            curveFlipped: true,
+            angle: PI / 1.1
+        },{ //number 13
             x: 220,
             y: 440,
             fillStyles: ['layered', '606257', 'dots'],
@@ -474,8 +489,9 @@ function setup() {
                 color('#F66CD1')
             ],
             hasCurve: false,
-            angle: PI / 6
-        },{
+            angle: PI / 6,
+            hasDiagonal: true
+        },{ //number 14
             x: 375,
             y: 410,
             fillStyles: ['layered', '606257', 'dots'],
@@ -487,7 +503,7 @@ function setup() {
             ],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 15
             x: 525,
             y: 370,
             fillStyles: ['none', 'layered', 'zigzag'],
@@ -497,7 +513,7 @@ function setup() {
                 color('#E21F01')],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 16
             x: 330,
             y: 550,
             fillStyles: ['none', 'dots', 'dots'],
@@ -505,7 +521,7 @@ function setup() {
             patternColors: [color('#000000'), color('#53BF6C'), color('#F52121')],
             hasCurve: false,
             angle: PI / 3
-        },{
+        },{ //number 17
             x: 480,
             y: 530,
             fillStyles: ['layered', 'none', 'dots'],
@@ -525,11 +541,13 @@ function setup() {
 
 
 function draw() {
+    translate((width - baseWidth * scaling) / 2, (height - baseHeight * scaling) / 2);
+    scale(scaling);
     background(1, 89, 125);
     for (let r of rings) {
         r.display();
     }
-    fillEllipse(ellipses);
+
     for (let i = 0; i < ellipses.length; i++) {
         let e = ellipses[i];
         stroke("#F28633");
@@ -544,6 +562,24 @@ function draw() {
     }
     drawCircles(circles);
 
+    let activeRings = rings.filter(r => r.isRotating);
+    let totalSpeed = activeRings.reduce((sum, r) => sum + Math.abs(r.rotationSpeed), 0);
+    let dynamicFactor = totalSpeed * activeRings.length;
+
+    colorInterval = max(20, 400 - dynamicFactor * 1000);
+
+    colorTimer++;
+    if (colorTimer >= colorInterval) {
+        colorTimer = 0;
+        for (let i = 0; i < ellipses.length; i++) {
+            colorIndex = (fillColors.indexOf(ellipses[i].fillColor) + 1) % fillColors.length;
+            ellipses[i].fillColor = fillColors[colorIndex];
+        }
+    }
+
+
+
+
 }
 
 class RingPattern {
@@ -556,16 +592,20 @@ class RingPattern {
         this.r2 = 35;
         this.r3 = 70;
 
-        this.fillStyles = config.fillStyles;
+        this.fillStyles = config.fillStyles; // [center, inner, outer]
         this.bgColors = config.bgColors;
         this.patternColors = config.patternColors;
 
         this.hasCurve = config.hasCurve ?? false;
+        this.curveFlipped = config.curveFlipped ?? false;
+        this.hasDiagonal = config.hasDiagonal ?? false;
         this.angle = config.angle ?? 0;
         this.rotation = 0;
         this.isRotating = false;
         this.rotationSpeed = 0.01;
         this.clockwise = true;
+        this.dotsCache = {};
+        this.layeredCache = {};
 
     }
 
@@ -581,30 +621,28 @@ class RingPattern {
     }
 
     render() {
-
         noStroke();
         noFill();
         ellipse(this.x, this.y, this.r1 * 2);
         ellipse(this.x, this.y, this.r2 * 2);
         ellipse(this.x, this.y, this.r3 * 2);
 
-
         this.drawRegion(this.r0, this.r1, this.fillStyles[0], this.bgColors[0], this.patternColors[0]);
         this.drawRegion(this.r1, this.r2, this.fillStyles[1], this.bgColors[1], this.patternColors[1]);
         this.drawRegion(this.r2, this.r3, this.fillStyles[2], this.bgColors[2], this.patternColors[2]);
 
-
         this.drawPinkCurve();
-
         noStroke();
         fill(230);
-        ellipse(this.x, this.y, this.r0 * 2);
+        ellipse(0, 0, this.r0 * 2);
+        this.drawDiagonalLine();
+
 
     }
 
     drawRegion(innerR, outerR, style, bgColor, patternColor) {
         noStroke();
-
+        // stroke(this.bgColors[0]);
         fill(bgColor);
         this.drawDonut(innerR, outerR);
 
@@ -649,61 +687,78 @@ class RingPattern {
     }
 
 
+
     drawLayeredRings(innerR, outerR, baseColors) {
-        let ringCount = 14;
-
-
+        let ringCount = baseColors.length;
+        let key = `${innerR}-${outerR}-${baseColors.map(c => c.toString()).join(',')}`;
         let colorPool = [...baseColors];
+
         while (colorPool.length < ringCount) {
             colorPool.push(random(baseColors));
         }
 
-
-        shuffle(colorPool, true);
-
+        if (!this.layeredCache[key]) {
+            let rings = [];
+            for (let i = 0; i < ringCount; i++) {
+                let t = i / (ringCount - 1);
+                let r = lerp(innerR, outerR, t);
+                rings.push({ radius: r, color: baseColors[i] });
+            }
+            this.layeredCache[key] = rings;
+        }
 
         noFill();
         strokeWeight(3);
-        for (let i = 0; i < ringCount; i++) {
-            let t = i / (ringCount - 1);
-            let r = lerp(innerR, outerR, t);
-            stroke(colorPool[i]);
-            ellipse(this.x, this.y, r * 2);
+        for (let ring of this.layeredCache[key]) {
+            stroke(ring.color);
+            ellipse(0, 0, ring.radius * 2);
         }
     }
 
 
 
+
+
     drawDotsRing(rMin, rMax, ringCount, dotColor) {
+        let key = `${rMin}-${rMax}-${ringCount}-${dotColor.toString()}`;
+        if (!this.dotsCache[key]) {
+            let margin = 3;
+            let rings = [];
+
+            for (let i = 0; i < ringCount; i++) {
+                let r = lerp(rMin + margin, rMax - margin, i / (ringCount - 1));
+                let baseCount = floor(r * 1);
+                let count = baseCount;
+
+                let dots = [];
+                for (let j = 0; j < count; j++) {
+                    let angle = TWO_PI * j / count + random(-0.05, 0.05);
+                    let radiusOffset = random(-1.2, 1.2);
+                    let effectiveR = r + radiusOffset;
+                    let x = effectiveR * cos(angle);
+                    let y = effectiveR * sin(angle);
+
+                    let sizeFactor = map(effectiveR, rMin, rMax, rMin * 0.03, rMax * 0.018);
+                    let w = random(4, 6) * sizeFactor;
+                    let h = random(3, 5) * sizeFactor;
+                    let a = angle + random(-0.3, 0.3);
+
+                    dots.push({ x, y, w, h, a });
+                }
+                rings.push(dots);
+            }
+
+            this.dotsCache[key] = rings;
+        }
+
         fill(dotColor);
         noStroke();
-        let margin = 3;
-
-        for (let i = 0; i < ringCount; i++) {
-            let r = lerp(rMin + margin, rMax - margin, i / (ringCount - 1));
-
-
-            let baseCount = floor(r * 1);
-            let count = baseCount + floor(random(-4, 4));
-
-            for (let j = 0; j < count; j++) {
-                let angle = TWO_PI * j / count + random(-0.05, 0.05);
-                let radiusOffset = random(-1.2, 1.2);
-                let effectiveR = r + radiusOffset;
-                let x = effectiveR * cos(angle);
-                let y = effectiveR * sin(angle);
-
-
-                let sizeFactor = map(effectiveR, rMin, rMax, rMin * 0.03, rMax * 0.018);
-                let w = random(4, 6) * sizeFactor;
-                let h = random(3, 5) * sizeFactor;
-
-                let a = angle + random(-0.3, 0.3);
-
+        for (let dots of this.dotsCache[key]) {
+            for (let d of dots) {
                 push();
-                translate(x, y);
-                rotate(a);
-                ellipse(0, 0, w, h);
+                translate(d.x, d.y);
+                rotate(d.a);
+                ellipse(0, 0, d.w, d.h);
                 pop();
             }
         }
@@ -713,11 +768,14 @@ class RingPattern {
 
 
 
+
+
     drawPinkCurve() {
         if (!this.hasCurve) return;
-
+        if (this.curveFlipped) {
+            scale(-1, 1);
+        }
         push();
-        translate(this.x, this.y);
         rotate(this.angle);
         stroke('#F35074');
         strokeWeight(4);
@@ -731,6 +789,18 @@ class RingPattern {
         );
         pop();
     }
+
+    drawDiagonalLine() {
+        if (!this.hasDiagonal) return;
+
+        push();
+        rotate(PI / 1.2);
+        stroke('#FF0000');
+        strokeWeight(2);
+        line(-this.r3, 0, this.r3, 0);
+        pop();
+    }
+
 }
 
 
@@ -739,7 +809,60 @@ function mousePressed() {
         let d = dist(mouseX, mouseY, r.x, r.y);
         if (d < r.r3) {
             r.isRotating = !r.isRotating;
+            operatingRings.length = 0;
+            operatingRings.push(r);
+            if (r.isRotating) {
+                loop(); //
+            }
         }
     }
-    loop();
+}
+
+function keyPressed() {
+    if (key == ' ') {
+        noLoop
+        let allRotating = rings.every(r => r.isRotating);
+        operatingRings.length = 0;
+        for (let r of rings) {
+            r.isRotating = !allRotating;
+            operatingRings.push(r);
+        }
+        if (!allRotating) {
+            loop();
+        } else {
+            noLoop();
+        }
+    } else if (keyCode === UP_ARROW){
+        for (let r of operatingRings){
+            r.rotationSpeed += 0.01;
+        }
+    } else if (keyCode === DOWN_ARROW){
+        for (let r of operatingRings){
+            r.rotationSpeed -= 0.01;
+        }
+    } else if (keyCode === LEFT_ARROW){
+        for (let r of operatingRings){
+            r.clockwise = false;
+        }
+    } else if (keyCode === RIGHT_ARROW){
+        for (let r of operatingRings){
+            r.clockwise = true;
+        }
+    } else if (key === 'c') {
+        fillEllipse(ellipses);
+        for (let r of rings) {
+            r.clockwise = true;
+            r.rotationSpeed = 0.01;
+            r.isRotating = false;
+            r.rotation = 0;
+        }
+        operatingRings.length = 0;
+        noLoop();
+        redraw();
+    }
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+    scaling = min(width / baseWidth, height / baseHeight);
 }
