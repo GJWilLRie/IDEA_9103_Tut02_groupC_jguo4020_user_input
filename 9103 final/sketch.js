@@ -1,12 +1,12 @@
-let rings = [];
+let rings = []; //Array of ring pattern instances
 let ringConfigs = [];
 let fillColors = ['#FABC08','#4CAECD','#06978A','#D70E08'];
-let operatingRings = [];
-let colorIndex = 0;
+let operatingRings = []; //Currently selected operating rings
+let colorIndex = 0; // Index and timer for color change
 let colorTimer = 0;
 let colorInterval = 10;
 let canvas;
-let baseSize = 520;
+let baseSize = 520; // Logical canvas size (base size)
 
 let ellipses = [
     { x: 286.8, y: 73.4, angle: 0, fillColor: null},
@@ -120,7 +120,7 @@ let ellipses = [
     { x: 242.5, y: 111.4, angle: 0, fillColor: null}
 ];
 
-
+// Assign color to each ellipse (cycled)
 function fillEllipse(ellipsesList) {
     let count = 0;
     for (let i = 0; i < ellipsesList.length; i++) {
@@ -132,6 +132,7 @@ function fillEllipse(ellipsesList) {
     }
 }
 
+// White dots
 let circles = [
     { x: 12.0, y: 9.0, r: 6.0},
     { x: 12.0, y: 9.0, r: 6.0},
@@ -530,12 +531,16 @@ function setup() {
         }
     ];
 
+    // Create RingPattern instances from configs
     for (let config of ringConfigs) {
         rings.push(new RingPattern(config));
     }
+
+    // Initial responsive scale setup
     windowResized();
 }
 
+// Adjust canvas scale on window resize
 function windowResized() {
     let scaleFactor = min(windowWidth, windowHeight) / baseSize;
     canvas.style('transform', `scale(${scaleFactor})`);
@@ -543,6 +548,7 @@ function windowResized() {
     canvas.position((windowWidth - baseSize * scaleFactor) / 2, (windowHeight - baseSize * scaleFactor) / 2);
 }
 
+// Main draw function
 function draw() {
     background(1, 89, 125);
     for (let r of rings) {
@@ -674,7 +680,7 @@ class RingPattern {
     }
 
     drawZigzagRing(innerR, outerR, steps, ringColor) {
-        let offset = 5; // 安全内缩
+        let offset = 5; // safe offset for not exceeding the boundaries
 
         stroke(ringColor);
         strokeWeight(1.5);
@@ -816,7 +822,7 @@ function getLogicalMousePos() {
     return { x, y };
 }
 
-
+// Handle mouse click event and get logical mouse position after scaling
 function mousePressed(event) {
     let scaleFactor = min(windowWidth, windowHeight) / baseSize;
     let bounds = canvas.elt.getBoundingClientRect();
@@ -837,9 +843,9 @@ function mousePressed(event) {
 }
 
 
-
+// Handle key press controls
 function keyPressed() {
-    if (key == ' ') {
+    if (key == ' ') { //Space: toggle all rings
         noLoop
         let allRotating = rings.every(r => r.isRotating);
         operatingRings.length = 0;
@@ -854,7 +860,7 @@ function keyPressed() {
         }
     } else if (keyCode === UP_ARROW){
         for (let r of operatingRings){
-            r.rotationSpeed += 0.01;
+            r.rotationSpeed += 0.01; // Speed up
         }
     } else if (keyCode === DOWN_ARROW){
         for (let r of operatingRings){
@@ -870,7 +876,7 @@ function keyPressed() {
         }
     } else if (key === 'c') {
         fillEllipse(ellipses);
-        for (let r of rings) {
+        for (let r of rings) { // reset everything
             r.clockwise = true;
             r.rotationSpeed = 0.01;
             r.isRotating = false;
